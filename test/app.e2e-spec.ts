@@ -1,7 +1,15 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import request from 'supertest';
 import { AppModule } from './../src/app.module';
+
+interface UserResponse {
+  id: string;
+  username: string;
+  birthdate: string;
+  balance: number;
+}
 
 describe('API (e2e)', () => {
   let app: INestApplication;
@@ -35,8 +43,9 @@ describe('API (e2e)', () => {
         })
         .expect(201);
 
-      expect(response.body).toHaveProperty('id');
-      userId1 = response.body.id;
+      const body = response.body as UserResponse;
+      expect(body).toHaveProperty('id');
+      userId1 = body.id;
     });
 
     it('should create a second user', async () => {
@@ -49,8 +58,9 @@ describe('API (e2e)', () => {
         })
         .expect(201);
 
-      expect(response.body).toHaveProperty('id');
-      userId2 = response.body.id;
+      const body = response.body as UserResponse;
+      expect(body).toHaveProperty('id');
+      userId2 = body.id;
     });
 
     it('should return 409 for duplicate username', async () => {
@@ -117,12 +127,13 @@ describe('API (e2e)', () => {
         .get('/users')
         .expect(200);
 
-      expect(Array.isArray(response.body)).toBe(true);
-      expect(response.body.length).toBeGreaterThanOrEqual(2);
-      expect(response.body[0]).toHaveProperty('id');
-      expect(response.body[0]).toHaveProperty('username');
-      expect(response.body[0]).toHaveProperty('birthdate');
-      expect(response.body[0]).toHaveProperty('balance');
+      const users = response.body as UserResponse[];
+      expect(Array.isArray(users)).toBe(true);
+      expect(users.length).toBeGreaterThanOrEqual(2);
+      expect(users[0]).toHaveProperty('id');
+      expect(users[0]).toHaveProperty('username');
+      expect(users[0]).toHaveProperty('birthdate');
+      expect(users[0]).toHaveProperty('balance');
     });
   });
 

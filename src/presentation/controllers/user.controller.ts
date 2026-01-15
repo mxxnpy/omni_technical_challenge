@@ -32,7 +32,11 @@ export class UserController {
   @Post('signup')
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: 'Cadastrar novo usuario' })
-  @ApiResponse({ status: 201, description: 'Usuario criado com sucesso', type: SignUpResponseDto })
+  @ApiResponse({
+    status: 201,
+    description: 'Usuario criado com sucesso',
+    type: SignUpResponseDto,
+  })
   @ApiResponse({ status: 409, description: 'Username ja existe' })
   signup(@Body() dto: SignUpDto) {
     return this.signUpUseCase.execute(dto);
@@ -41,7 +45,11 @@ export class UserController {
   @Post('signin')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Login de usuario' })
-  @ApiResponse({ status: 200, description: 'Login realizado com sucesso', type: SignInResponseDto })
+  @ApiResponse({
+    status: 200,
+    description: 'Login realizado com sucesso',
+    type: SignInResponseDto,
+  })
   @ApiResponse({ status: 401, description: 'Credenciais invalidas' })
   signin(@Body() dto: SignInDto) {
     return this.signInUseCase.execute(dto);
@@ -50,7 +58,11 @@ export class UserController {
   @Get()
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Listar todos os usuarios' })
-  @ApiResponse({ status: 200, description: 'Lista de usuarios retornada com sucesso', type: [UserResponseDto] })
+  @ApiResponse({
+    status: 200,
+    description: 'Lista de usuarios retornada com sucesso',
+    type: [UserResponseDto],
+  })
   findAll() {
     return this.getAllUsersUseCase.execute();
   }
