@@ -44,7 +44,7 @@ describe('SignUpUseCase', () => {
     const result = await useCase.execute(input);
 
     expect(result).toHaveProperty('id');
-    expect(mockUserRepository.findByUsername).toHaveBeenCalledWith('testuser');
+    expect(mockUserRepository.findByUsername).toHaveBeenCalledWith('leandro_silva');
     expect(mockUserRepository.create).toHaveBeenCalled();
   });
 
