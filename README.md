@@ -1,79 +1,136 @@
-# OMNI Technical Challange
+# OMNI Technical Challenge
 
-1. Descrição
-- API REST para simular um sistema simples de transações monetárias entre usuários.
+API REST para simular um sistema simples de transações monetárias entre usuários.
 
-2. Requisitos
-- Necessário desenvolver as seguintes rotas
-  - Rota de cadastro de usuário
-```
-POST /users/signup
+## Quick Start
 
-json body request
-{
-  username: string,
-  password: string,
-  birthdate: string
-}
+### Pré-requisitos
 
-json body response (201 CREATED)
-{
-  id: string,
-}
+- Node.js 18+
+- PostgreSQL 14+ (ou Docker)
+
+### Opção 1: Com Docker (Recomendado)
+
+```bash
+# Subir PostgreSQL + Aplicação
+docker-compose up --build
+
+# A aplicação estará disponível em http://localhost:3000
+# Swagger em http://localhost:3000/swagger
 ```
 
-  - Rota de login de usuário
-```
-POST /users/signin
+### Opção 2: Local com PostgreSQL
 
-json body request
-{
-  username: string,
-  password: string,
-}
+#### 1. Configurar PostgreSQL
 
-json body response (200 OK)
-{
-  token: string,
-  expiresIn: string
-}
+```bash
+# Criar banco de dados
+psql -U postgres -c "CREATE DATABASE omni_challenge;"
 ```
 
-  - Rota de transferencia de dinheiro entre usuários
-```
-POST /transfer
+Ou via Docker apenas o PostgreSQL:
 
-auth: Bearer token
-
-json body request
-{
-  fromId: string,
-  toId: string,
-  amount: number
-}
-
-json body response (204 NO CONTENT)
+```bash
+docker run -d \
+  --name omni-postgres \
+  -e POSTGRES_USER=postgres \
+  -e POSTGRES_PASSWORD=postgres \
+  -e POSTGRES_DB=omni_challenge \
+  -p 5432:5432 \
+  postgres:16-alpine
 ```
 
-  - Rota para retornar todos usuários
-```
-GET /users
+#### 2. Configurar variáveis de ambiente
 
-auth: Bearer token
+Crie um arquivo `.env` na raiz do projeto:
 
-json body response (200 OK)
-{
-  id: string,
-  username: string,
-  birthdate: string,
-  balance: string
-}
+```env
+DB_HOST=localhost
+DB_PORT=5432
+DB_USERNAME=postgres
+DB_PASSWORD=postgres
+DB_NAME=omni_challenge
+PORT=3000
 ```
 
-3. Técnologias a serem utilizadas
-- NestJS
-- Persisitência (Opcional)
-- TypeORM (Opcional)
-- Docker (Opcional)
-- Testes de integração e unitários (Opcional)
-- Deploy (Opcional - dical de site [render](https://render.com/))
+#### 3. Instalar dependências e rodar
+
+```bash
+npm install
+npm run start:dev
+```
+
+## Endpoints
+
+| Método | Rota | Descrição | Status |
+|--------|------|-----------|--------|
+| POST | `/users/signup` | Cadastro de usuário | 201 |
+| POST | `/users/signin` | Login de usuário | 200 |
+| GET | `/users` | Listar todos usuários | 200 |
+| POST | `/transfer` | Transferência entre usuários | 204 |
+
+### Exemplos de Requisições
+
+#### Cadastrar usuário
+
+```bash
+curl -X POST http://localhost:3000/users/signup \
+  -H "Content-Type: application/json" \
+  -d '{"username": "joao", "password": "senha123", "birthdate": "1990-01-15"}'
+```
+
+#### Login
+
+```bash
+curl -X POST http://localhost:3000/users/signin \
+  -H "Content-Type: application/json" \
+  -d '{"username": "joao", "password": "senha123"}'
+```
+
+#### Listar usuários
+
+```bash
+curl http://localhost:3000/users
+```
+
+#### Transferir
+
+```bash
+curl -X POST http://localhost:3000/transfer \
+  -H "Content-Type: application/json" \
+  -d '{"fromId": "uuid-remetente", "toId": "uuid-destinatario", "amount": 100}'
+```
+
+## Testes
+
+```bash
+# Testes unitários
+npm run test
+
+# Testes e2e
+npm run test:e2e
+
+# Cobertura
+npm run test:cov
+```
+
+## Arquitetura
+
+```
+src/
+├── domain/           # Entidades e interfaces
+├── infrastructure/   # TypeORM, Config
+├── application/      # Use Cases
+├── presentation/     # Controllers, DTOs
+├── modules/          # Módulos NestJS
+└── shared/           # Constantes, Utils, Filters
+```
+
+## Tecnologias
+
+- **NestJS** - Framework
+- **TypeORM** - ORM
+- **PostgreSQL** - Banco de dados
+- **Docker** - Containerização
+- **Jest** - Testes
+- **Swagger** - Documentação API
