@@ -7,7 +7,10 @@ export class SignUpDto {
   @IsNotEmpty()
   username: string;
 
-  @ApiProperty({ example: 'senha123', description: 'Senha do usuario (min 6 caracteres)' })
+  @ApiProperty({
+    example: 'senha123',
+    description: 'Senha do usuario (min 6 caracteres)',
+  })
   @IsString()
   @IsNotEmpty()
   @MinLength(6)

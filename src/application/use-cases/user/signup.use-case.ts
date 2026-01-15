@@ -34,7 +34,10 @@ export class SignUpUseCase {
       throw new ConflictException(ERROR_MESSAGES.USERNAME_EXISTS);
     }
 
-    const hashedPassword = await bcrypt.hash(input.password, APP_CONSTANTS.BCRYPT_SALT_ROUNDS);
+    const hashedPassword = await bcrypt.hash(
+      input.password,
+      APP_CONSTANTS.BCRYPT_SALT_ROUNDS,
+    );
 
     const user = new User();
     user.id = uuidv4();
